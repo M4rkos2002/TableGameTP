@@ -1,13 +1,13 @@
 plugins {
     java
     application
-    kotlin("jvm") version "1.7.10"
+    kotlin("jvm") version "1.9.0"
     id("org.openjfx.javafxplugin").version("0.0.13")
 
 }
 
 group = "edu.austral.dissis.chess"
-version = "1.0.0"
+version = "2.0.1"
 
 repositories {
 //    mavenLocal()
@@ -15,8 +15,8 @@ repositories {
     maven {
         url = uri("https://maven.pkg.github.com/austral-ingsis/chess-ui")
         credentials {
-            username = System.getenv("GITHUB_USER")
-            password = System.getenv("GITHUB_TOKEN")
+            username = project.properties["github.user"] as String
+            password = project.properties["github.token"] as String
         }
     }
 }
@@ -24,7 +24,15 @@ repositories {
 dependencies {
     implementation(platform("org.jetbrains.kotlin:kotlin-bom"))
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-    implementation("edu.austral.dissis.chess:chess-ui:1.0.0")
+    implementation("edu.austral.dissis.chess:chess-ui:2.0.1")
+    implementation("edu.austral.dissis.chess:simple-client-server:1.2.0")
+    implementation("io.netty:netty-all:4.1.100.Final")
+    api ("com.fasterxml.jackson.core:jackson-core:2.15.3")
+    implementation ("com.fasterxml.jackson.module:jackson-module-kotlin:2.15.3")
+    implementation ("ch.qos.logback:logback-classic:1.4.11")
+    testImplementation ("org.junit.jupiter:junit-jupiter-engine:5.8.1")
+    testImplementation ("org.jetbrains.kotlin:kotlin-test-junit5")
+    testImplementation("org.junit.jupiter:junit-jupiter:5.8.1")
 }
 
 javafx {
