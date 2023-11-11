@@ -1,7 +1,9 @@
+import java.net.URI
+
 plugins {
     java
     application
-    kotlin("jvm") version "1.9.0"
+    kotlin("jvm") version "1.9.10"
     id("org.openjfx.javafxplugin").version("0.0.13")
 
 }
