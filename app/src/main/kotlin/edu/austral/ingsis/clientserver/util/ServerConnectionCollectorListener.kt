@@ -1,7 +1,6 @@
 package edu.austral.ingsis.clientserver.util
 
-import edu.austral.ingsis.clientserver.ServerConnectionListener
-
+import edu.austral.ingsis.clientserver.ServerConnectionListener;
 class ServerConnectionCollectorListener : ServerConnectionListener {
     val clients = mutableListOf<String>()
 

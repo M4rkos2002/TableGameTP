@@ -1,7 +1,6 @@
 package edu.austral.ingsis.clientserver.util
 
 import edu.austral.ingsis.clientserver.ClientConnectionListener
-
 class ClientConnectionCollectorListener : ClientConnectionListener {
     var isConnected = false
 

@@ -1,7 +1,7 @@
 package edu.austral.ingsis.clientserver.util
 
-import edu.austral.ingsis.clientserver.Message
 import edu.austral.ingsis.clientserver.MessageListener
+import edu.austral.ingsis.clientserver.Message;
 
 class MessageCollectorListener<P : Any> : MessageListener<P> {
     val messages = mutableListOf<P>()

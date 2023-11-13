@@ -24,17 +24,8 @@ repositories {
 }
 
 dependencies {
-    implementation(platform("org.jetbrains.kotlin:kotlin-bom"))
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation("edu.austral.dissis.chess:chess-ui:2.0.1")
     implementation("edu.austral.dissis.chess:simple-client-server:1.2.0")
-    implementation("io.netty:netty-all:4.1.100.Final")
-    api ("com.fasterxml.jackson.core:jackson-core:2.15.3")
-    implementation ("com.fasterxml.jackson.module:jackson-module-kotlin:2.15.3")
-    implementation ("ch.qos.logback:logback-classic:1.4.11")
-    testImplementation ("org.junit.jupiter:junit-jupiter-engine:5.8.1")
-    testImplementation ("org.jetbrains.kotlin:kotlin-test-junit5")
-    testImplementation("org.junit.jupiter:junit-jupiter:5.8.1")
 }
 
 javafx {
@@ -44,5 +35,5 @@ javafx {
 
 application {
     // Define the main class for the application.
-    mainClass.set("edu.austral.dissis.chess.AppKt")
+    mainClass.set("org.example.app.ChessApplication")
 }

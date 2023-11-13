@@ -1,6 +1,8 @@
 package org.example.app;
 
 import edu.austral.dissis.chess.gui.*;
+import edu.austral.ingsis.clientserver.Client;
+import edu.austral.ingsis.clientserver.Server;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
@@ -15,6 +17,10 @@ public class ChessApplication extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
+        Server server = ServerStarter.init_server();
+        Client white = ClientStarter.init_client();
+        Client black = ClientStarter.init_client();
+
         GameEngine client1 = new EngineImpl(new RegularChessFactory());
         Stage client1Stage = new Stage();
         client1Stage.setTitle("Player White");
@@ -27,4 +33,5 @@ public class ChessApplication extends Application {
         client2Stage.setScene(new Scene(Adapter.createGameView(client2, blackResolver)));
         client2Stage.show();
     }
+
 }
