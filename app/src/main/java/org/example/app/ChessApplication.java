@@ -1,37 +1,43 @@
 package org.example.app;
 
 import edu.austral.dissis.chess.gui.*;
-import edu.austral.ingsis.clientserver.Client;
-import edu.austral.ingsis.clientserver.Server;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import org.example.adapter.EngineImpl;
+import org.example.app.listener.client.GameStateListenerImpl;
+import org.example.app.listener.server.GameResolver;
 import org.example.factory.RegularChessFactory;
 
 
 public class ChessApplication extends Application {
     private ImageResolver whiteResolver = new CachedImageResolver(new DefaultImageResolver());
     private ImageResolver blackResolver = new CachedImageResolver(new DefaultImageResolver());
-
+    private ServerService serverService = new ServerService(10000, new EngineImpl(new RegularChessFactory()));
+    private ClientService blackPlayer = new ClientService(10000);
+    private ClientService whitePlayer = new ClientService(10000);
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        Server server = ServerStarter.init_server();
-        Client white = ClientStarter.init_client();
-        Client black = ClientStarter.init_client();
-
-        GameEngine client1 = new EngineImpl(new RegularChessFactory());
+        blackPlayer.init_connection();
+        whitePlayer.init_connection();
+        serverService.initGame();
         Stage client1Stage = new Stage();
         client1Stage.setTitle("Player White");
-        client1Stage.setScene(new Scene(Adapter.createGameView(client1, whiteResolver)));
+        GameView whiteGameView = Adapter.createGameView(serverService.getGameEngine(), whiteResolver, whitePlayer);
+        client1Stage.setScene(new Scene(whiteGameView));
         client1Stage.show();
 
-        GameEngine client2 = new EngineImpl(new RegularChessFactory());
         Stage client2Stage = new Stage();
         client2Stage.setTitle("Player Black");
-        client2Stage.setScene(new Scene(Adapter.createGameView(client2, blackResolver)));
+        GameView blakcGameView = Adapter.createGameView(serverService.getGameEngine(), blackResolver, blackPlayer);
+        client2Stage.setScene(new Scene(blakcGameView));
         client2Stage.show();
+
+        blackPlayer.addGameStateListener(new GameStateListenerImpl(blakcGameView));
+        whitePlayer.addGameStateListener(new GameStateListenerImpl(whiteGameView));
+        blackPlayer.init_connection();
+        whitePlayer.init_connection();
     }
 
 }

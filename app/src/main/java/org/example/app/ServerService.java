@@ -8,46 +8,63 @@ import edu.austral.dissis.chess.gui.MoveResult;
 import edu.austral.ingsis.clientserver.Message;
 import edu.austral.ingsis.clientserver.MessageListener;
 import edu.austral.ingsis.clientserver.Server;
+import edu.austral.ingsis.clientserver.ServerConnectionListener;
 import edu.austral.ingsis.clientserver.netty.server.NettyServerBuilder;
-import edu.austral.ingsis.clientserver.util.ServerConnectionCollectorListener;
-import org.example.app.listener.server.VerifyMove;
+import org.example.app.listener.server.MoveCollector;
+import org.example.app.listener.server.ServerConnectionClientCollector;
 
 public class ServerService {
 
     private final Server server;
     private GameEngine gameEngine;
-    private VerifyMove verifyMoveListener = new VerifyMove();
+    private MoveCollector moveCollectorListener;
+    private ServerConnectionClientCollector clientCollector;
 
     public ServerService(int port, GameEngine gameEngine){
-        this.server = ServerService.init_server(port, new VerifyMove());
-        server.start();
+        this.moveCollectorListener = new MoveCollector();
+        this.clientCollector = new ServerConnectionClientCollector();
+        this.server = ServerService.init_server(port, moveCollectorListener, clientCollector);
         this.gameEngine = gameEngine;
+        server.start();
     }
 
-    public static Server init_server(int port, MessageListener<Move> verifyMoveListener){
+    public static Server init_server(int port, MessageListener<Move> moveCollectorListener, ServerConnectionListener clientCollector){
         return NettyServerBuilder.Companion.createDefault()
                 .withPort(port)
-                .addMessageListener("move", new TypeReference<Message<Move>>() {}, verifyMoveListener)
+                .withConnectionListener(clientCollector)
+                .addMessageListener("move", new TypeReference<Message<Move>>() {}, moveCollectorListener)
                 .build();
     }
 
-    public void sendResult(MoveResult result){
-        server.broadcast(new Message<>("update", result));
+    public void initGame(){
+        this.sendInitialState(gameEngine.init());
     }
-
-    public void sendInitialState(InitialState initialState){
+    private void sendInitialState(InitialState initialState){
         server.broadcast(new Message<>("initialState", initialState));
     }
 
     public void verifyMovement(){
-        Move move = verifyMoveListener.collect();
-        if(move != null) {
-            MoveResult result = gameEngine.applyMove(move);
-            this.sendResult(result);
-        }
+        Move move = moveCollectorListener.collect();
+        MoveResult result = gameEngine.applyMove(move);
+        this.sendResult(result);
+        System.out.println("Verify move " + move.toString());
+        System.out.println("Result " + result.toString());
+    }
+
+    private void sendResult(MoveResult result){
+        System.out.println("sending " + result.toString());
+        server.broadcast(new Message<>("update", result));
     }
 
     public void killServer(){
         server.stop();
+    }
+
+    public GameEngine getGameEngine(){
+        return gameEngine;
+    }
+
+    public Boolean hasMove(){
+        return moveCollectorListener.collect() != null;
     }
 }

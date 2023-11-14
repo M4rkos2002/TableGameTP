@@ -1,19 +1,16 @@
 package org.example.app;
 
-import edu.austral.dissis.chess.gui.GameEngine;
-import edu.austral.dissis.chess.gui.GameEventListener;
-import edu.austral.dissis.chess.gui.GameView;
-import edu.austral.dissis.chess.gui.ImageResolver;
+import edu.austral.dissis.chess.gui.*;
 import org.example.app.listener.client.GameEventListenerImpl;
+import org.example.app.listener.client.GameStateListenerImpl;
 
 public class Adapter {
 
 
-    public static GameView createGameView(GameEngine gameEngine, ImageResolver imageResolver){
+    public static GameView createGameView(GameEngine gameEngine, ImageResolver imageResolver, ClientService clientService){
         GameView gameView = new GameView(imageResolver);
 
-        GameEventListener gameEventListener = new GameEventListenerImpl(new ClientService(10000, new GameView(imageResolver)));
-
+        GameEventListener gameEventListener = new GameEventListenerImpl(clientService);
         gameView.addListener(gameEventListener);
         gameView.handleInitialState(gameEngine.init());
 

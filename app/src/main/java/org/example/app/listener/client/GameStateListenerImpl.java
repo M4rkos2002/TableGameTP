@@ -4,7 +4,6 @@ import edu.austral.dissis.chess.gui.GameStateListener;
 import edu.austral.dissis.chess.gui.GameView;
 import edu.austral.dissis.chess.gui.InitialState;
 import edu.austral.dissis.chess.gui.MoveResult;
-import org.example.app.ClientService;
 import org.jetbrains.annotations.NotNull;
 
 public class GameStateListenerImpl implements GameStateListener {
@@ -17,7 +16,7 @@ public class GameStateListenerImpl implements GameStateListener {
 
     @Override
     public void handleInitialState(@NotNull InitialState initialState) {
-        gameView.handleInitialState(initialState);
+
     }
 
     @Override
