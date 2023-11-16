@@ -2,7 +2,7 @@ package org.example.app;
 
 import edu.austral.dissis.chess.gui.*;
 import org.example.app.listener.client.GameEventListenerImpl;
-import org.example.app.listener.client.GameStateListenerImpl;
+import org.example.app.service.ClientService;
 
 public class Adapter {
 

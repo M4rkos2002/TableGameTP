@@ -1,12 +1,7 @@
 package org.example.app.listener.client;
 
 import edu.austral.dissis.chess.gui.*;
-import edu.austral.ingsis.clientserver.Client;
-import edu.austral.ingsis.clientserver.MessageListener;
-import edu.austral.ingsis.clientserver.Server;
-import edu.austral.ingsis.clientserver.util.ServerConnectionCollectorListener;
-import org.example.app.ClientService;
-import org.example.app.ServerService;
+import org.example.app.service.ClientService;
 import org.jetbrains.annotations.NotNull;
 
 public class GameEventListenerImpl implements GameEventListener {
