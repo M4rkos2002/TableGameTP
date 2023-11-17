@@ -15,8 +15,7 @@ public class GameStateListenerImpl implements GameStateListener {
     }
 
     @Override
-    public void handleInitialState(@NotNull InitialState initialState) {
-
+    public void handleInitialState(@NotNull InitialState initialState) {gameView.handleInitialState(initialState);
     }
 
     @Override

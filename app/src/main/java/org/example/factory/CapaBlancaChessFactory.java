@@ -17,6 +17,7 @@ import org.example.rule.movement.chess.special.pawn.PawnCaptureRule;
 import org.example.rule.movement.chess.special.pawn.PawnFirstMove;
 import org.example.rule.movement.chess.special.pawn.PawnMoveRule;
 import org.example.rule.wincondition.CheckMate;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -25,6 +26,23 @@ import java.util.List;
 public class CapaBlancaChessFactory implements Factory {
     @Override
     public Game generateGame() {
+        Board board = getPopulatedBoard();
+        PlayerController playerController = new RegularPlayerController(Color.WHITE);
+        List<WinCondition> rules = new ArrayList<>(); rules.add(new CheckMate());
+        RuleChecker ruleChecker = new RuleChecker(rules);
+        MoveHandler handler = new MoveHandler(new RegularChessMovementTable().generateTable());
+        return new Game(board, handler, playerController, ruleChecker);
+    }
+
+    @NotNull
+    private Board getPopulatedBoard() {
+        List<Piece> pieces = getPieces();
+        Board board = new Board( 8, 10,pieces);
+        return board;
+    }
+
+    @NotNull
+    private List<Piece> getPieces() {
         List<Piece> pieces = new ArrayList<>();
         pieces.addAll(this.generatePawns());
         pieces.addAll(this.generateRooks());
@@ -34,12 +52,7 @@ public class CapaBlancaChessFactory implements Factory {
         pieces.addAll(this.generateQueen());
         pieces.addAll(this.generateKing());
         pieces.addAll(this.generateBishop());
-        Board board = new Board( 8, 10,pieces);
-        PlayerController playerController = new RegularPlayerController(Color.WHITE);
-        List<WinCondition> rules = new ArrayList<>(); rules.add(new CheckMate());
-        RuleChecker ruleChecker = new RuleChecker(rules);
-        MoveHandler handler = new MoveHandler(new RegularChessMovementTable().generateTable());
-        return new Game(board, handler, playerController, ruleChecker);
+        return pieces;
     }
 
     public List<Piece> generatePawns() {
@@ -65,9 +78,7 @@ public class CapaBlancaChessFactory implements Factory {
     }
 //8x10
     public List<Piece> generateRooks() {
-        List<MovementRule> rules = new ArrayList<>();
-        rules.add(new ChessHorizontalRule());
-        rules.add(new ChessVerticalRule());
+        List<MovementRule> rules = new ArrayList<>();rules.add(new ChessHorizontalRule());rules.add(new ChessVerticalRule());
         List<Piece> rooks = new ArrayList<>();
         int id = 21;
         rooks.add(new Piece(String.valueOf(id), new Coordinate(8, 1), true, Color.BLACK, PieceName.ROOK, rules));
@@ -81,8 +92,7 @@ public class CapaBlancaChessFactory implements Factory {
     }
 
     public List<Piece> generateKnights() {
-        List<MovementRule> rules = new ArrayList<>();
-        rules.add(new LRule());
+        List<MovementRule> rules = new ArrayList<>(); rules.add(new LRule());
         List<Piece> knights = new ArrayList<>();
         int id = 25;
         knights.add(new Piece(String.valueOf(id), new Coordinate(8, 2), true, Color.BLACK, PieceName.KNIGHT, rules));

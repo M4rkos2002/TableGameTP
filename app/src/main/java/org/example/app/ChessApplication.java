@@ -8,13 +8,14 @@ import org.example.adapter.EngineImpl;
 import org.example.app.listener.client.GameStateListenerImpl;
 import org.example.app.service.ClientService;
 import org.example.factory.CapaBlancaChessFactory;
+import org.example.factory.CheckerFactory;
 import org.example.factory.RegularChessFactory;
 
 
 public class ChessApplication extends Application {
 
     private ImageResolver imageResolver = new CachedImageResolver(new DefaultImageResolver());
-    private GameEngine gameEngine = new EngineImpl(new RegularChessFactory());
+    private GameEngine gameEngine = new EngineImpl(new CheckerFactory());
     private ClientService clientService = new ClientService(10000);
 
     @Override

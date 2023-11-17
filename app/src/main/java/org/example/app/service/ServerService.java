@@ -8,14 +8,19 @@ import edu.austral.ingsis.clientserver.Server;
 import edu.austral.ingsis.clientserver.ServerConnectionListener;
 import edu.austral.ingsis.clientserver.netty.server.NettyServerBuilder;
 import org.example.app.listener.server.GameMoveListener;
+import org.example.app.listener.server.ServerConnectionListenerImpl;
 
 public class ServerService {
 
     private final Server server;
     private GameEngine gameEngine;
+    private InitialState initialState = gameEngine.init();
+    private MoveResult actualResult = null;
+
     public ServerService(int port, GameEngine gameEngine){
         this.server = NettyServerBuilder.Companion.createDefault()
                 .withPort(port)
+                .withConnectionListener(new ServerConnectionListenerImpl(this))
                 .addMessageListener("move", new TypeReference<Message<Move>>() {},  new GameMoveListener(this))
                 .build();
         this.gameEngine = gameEngine;
@@ -36,14 +41,29 @@ public class ServerService {
         MoveResult result = gameEngine.applyMove(move);
         if(result instanceof InvalidMove){
             server.broadcast(new Message<>("InvalidMove", result));
+            actualResult = result;
         }
         else if(result instanceof NewGameState){
             server.broadcast(new Message<>("NewGameState", result));
+            initialState = null;
+            actualResult = result;
         }
         else if(result instanceof GameOver){
             server.broadcast(new Message<>("GameOver", result));
+            initialState = null;
+            actualResult = result;
         }
     }
+
+    public void sendActualState(String id){
+        if(initialState != null){
+            server.sendMessage(id, new Message<>("InitalState", initialState));
+        }
+        else{
+            server.sendMessage(id, new Message<>("ActualState", actualResult));
+        }
+    }
+
     public void killServer(){
         server.stop();
     }
