@@ -1,6 +1,9 @@
 package org.example.factory;
 
 import org.example.commons.*;
+import org.example.commons.game.Game;
+import org.example.commons.game.InputValidator;
+import org.example.commons.game.RegularInputValidator;
 import org.example.handler.MoveHandler;
 import org.example.handler.factory.CheckersMovementTable;
 import org.example.player.PlayerController;
@@ -26,7 +29,8 @@ public class CheckerFactory implements Factory{
         PlayerController checkerPlayerController = new RegularPlayerController(Color.WHITE);
         List<WinCondition> rules = new ArrayList<>(); rules.add(new NoMorePieces());
         RuleChecker ruleChecker = new RuleChecker(Collections.unmodifiableList(rules));
-        return new Game(board, handler, checkerPlayerController, ruleChecker);
+        InputValidator inputValidator = new RegularInputValidator();
+        return new Game(board, handler, checkerPlayerController, ruleChecker, inputValidator);
     }
 
     public List<Piece> generateWhiteCheckers(int x, int y, int id, List<Piece> checkers){

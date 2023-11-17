@@ -14,53 +14,54 @@ public class ServerService {
 
     private final Server server;
     private GameEngine gameEngine;
-    private InitialState initialState = gameEngine.init();
+    private InitialState initialState;
     private MoveResult actualResult = null;
 
     public ServerService(int port, GameEngine gameEngine){
+        this.gameEngine = gameEngine;
+        this.initialState = gameEngine.init();
         this.server = NettyServerBuilder.Companion.createDefault()
                 .withPort(port)
                 .withConnectionListener(new ServerConnectionListenerImpl(this))
                 .addMessageListener("move", new TypeReference<Message<Move>>() {},  new GameMoveListener(this))
                 .build();
-        this.gameEngine = gameEngine;
     }
 
     public void init(){
         server.start();
     }
 
-    public void initGame(){
-        this.sendInitialState(gameEngine.init());
-    }
-    private void sendInitialState(InitialState initialState){
-        server.broadcast(new Message<>("initialState", initialState));
-    }
-
     public void verifyMovement(Move move){
         MoveResult result = gameEngine.applyMove(move);
-        if(result instanceof InvalidMove){
-            server.broadcast(new Message<>("InvalidMove", result));
-            actualResult = result;
-        }
-        else if(result instanceof NewGameState){
+        this.sendResult(result);
+    }
+
+    private void sendResult(MoveResult result){
+        if(result instanceof NewGameState){
             server.broadcast(new Message<>("NewGameState", result));
-            initialState = null;
             actualResult = result;
         }
         else if(result instanceof GameOver){
             server.broadcast(new Message<>("GameOver", result));
-            initialState = null;
+            actualResult = result;
+        }
+    }
+
+    private void sendResultToClient(MoveResult result, String id){
+        if(result instanceof NewGameState){
+            server.sendMessage(id ,new Message<>("NewGameState", result));
+            actualResult = result;
+        }
+        else if(result instanceof GameOver){
+            server.sendMessage(id,new Message<>("GameOver", result));
             actualResult = result;
         }
     }
 
     public void sendActualState(String id){
-        if(initialState != null){
-            server.sendMessage(id, new Message<>("InitalState", initialState));
-        }
-        else{
-            server.sendMessage(id, new Message<>("ActualState", actualResult));
+        server.sendMessage(id, new Message<>("InitialState", initialState));
+        if(actualResult != null){
+            this.sendResultToClient(actualResult, id);
         }
     }
 

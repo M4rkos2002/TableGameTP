@@ -1,13 +1,15 @@
 package org.example.factory;
 
 import org.example.commons.*;
+import org.example.commons.game.Game;
+import org.example.commons.game.InputValidator;
+import org.example.commons.game.RegularInputValidator;
 import org.example.handler.MoveHandler;
 import org.example.handler.factory.RegularChessMovementTable;
 import org.example.player.PlayerController;
 import org.example.player.RegularPlayerController;
 import org.example.rule.MovementRule;
 import org.example.rule.WinCondition;
-import org.example.rule.movement.HorizontalRule;
 import org.example.rule.movement.LRule;
 import org.example.rule.movement.chess.ChessDiagonalRule;
 import org.example.rule.movement.chess.ChessHorizontalRule;
@@ -31,7 +33,8 @@ public class CapaBlancaChessFactory implements Factory {
         List<WinCondition> rules = new ArrayList<>(); rules.add(new CheckMate());
         RuleChecker ruleChecker = new RuleChecker(rules);
         MoveHandler handler = new MoveHandler(new RegularChessMovementTable().generateTable());
-        return new Game(board, handler, playerController, ruleChecker);
+        InputValidator inputValidator = new RegularInputValidator();
+        return new Game(board, handler, playerController, ruleChecker, inputValidator);
     }
 
     @NotNull

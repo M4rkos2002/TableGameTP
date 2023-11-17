@@ -15,13 +15,12 @@ import org.example.factory.RegularChessFactory;
 public class ChessApplication extends Application {
 
     private ImageResolver imageResolver = new CachedImageResolver(new DefaultImageResolver());
-    private GameEngine gameEngine = new EngineImpl(new CheckerFactory());
     private ClientService clientService = new ClientService(10000);
 
     @Override
     public void start(Stage primaryStage) throws Exception {
         primaryStage.setTitle("Chess");
-        GameView gameView = Adapter.createGameView(gameEngine, imageResolver, clientService);
+        GameView gameView = Adapter.createGameView(imageResolver, clientService);
         primaryStage.setScene(new Scene(gameView));
         primaryStage.show();
 
